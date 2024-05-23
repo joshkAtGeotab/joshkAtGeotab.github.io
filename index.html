@@ -12,11 +12,9 @@
       <script>
         function doThingsWithCookies() {
             document.cookie = "foo=bar"; // set a cookie
-            $(document).ready(function() {
-                // replace the content of the main div with a message
-                $("main").html("<p>We have cookie access!</p>");
-                $("main").append("<p>Cookie value: " + document.cookie + "</p>");
-            });
+            // replace the content of the main div with a message
+            $("#main").html("<p>We have cookie access!</p>");
+            $("#main").append("<p>Cookie value: " + document.cookie + "</p>");
         }
 
         async function handleCookieAccess() {
