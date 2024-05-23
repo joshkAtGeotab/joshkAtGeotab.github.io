@@ -20,24 +20,32 @@
         }
 
         async function handleCookieAccess() {
+            console.log('tick1');    
+
             if (!document.hasStorageAccess) {
+                console.log('tick2');    
                 // This browser doesn't support the Storage Access API
                 // so let's just hope we have access!
                 doThingsWithCookies();
             } else {
+                console.log('tick3');    
                 const hasAccess = await document.hasStorageAccess();
                 if (hasAccess) {
+                    console.log('tick4');    
                     // We have access to third-party cookies, so let's go
                     doThingsWithCookies();
                 } else {
+                    console.log('tick5');    
                     // Check whether third-party cookie access has been granted
                     // to another same-site embed
                     try {
                         const permission = await navigator.permissions.query({
                             name: "storage-access",
                         });
+                        console.log('tick6');    
 
                         if (permission.state === "granted") {
+                            console.log('tick7');    
                             // If so, you can just call requestStorageAccess() without a user interaction,
                             // and it will resolve automatically.
                             const handle = await document.requestStorageAccess({
@@ -45,6 +53,7 @@
                             });
                             doThingsWithCookies();
                         } else if (permission.state === "prompt") {
+                            console.log('tick8');    
                             // Need to call requestStorageAccess() after a user interaction
                             btn.addEventListener("click", async () => {
                                 try {
@@ -70,7 +79,10 @@
                 }
             }
         }
+        console.log('tick0');    
+
         $(document).ready(function() {
+            console.log('tick0.1');    
             handleCookieAccess();
         });
       </script>
