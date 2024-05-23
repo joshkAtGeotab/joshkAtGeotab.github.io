@@ -19,10 +19,6 @@
             });
         }
 
-        function doThingsWithLocalStorage(handle) {
-            handle.localStorage.setItem("foo", "bar"); // set a local storage key
-        }
-
         async function handleCookieAccess() {
             if (!document.hasStorageAccess) {
                 // This browser doesn't support the Storage Access API
@@ -33,11 +29,6 @@
                 if (hasAccess) {
                     // We have access to third-party cookies, so let's go
                     doThingsWithCookies();
-                    // If we want to modify unpartitioned state, we need to request a handle.
-                    const handle = await document.requestStorageAccess({
-                        localStorage: true,
-                    });
-                    doThingsWithLocalStorage(handle);
                 } else {
                     // Check whether third-party cookie access has been granted
                     // to another same-site embed
@@ -51,9 +42,7 @@
                             // and it will resolve automatically.
                             const handle = await document.requestStorageAccess({
                                 cookies: true,
-                                localStorage: true,
                             });
-                            doThingsWithLocalStorage(handle);
                             doThingsWithCookies();
                         } else if (permission.state === "prompt") {
                             // Need to call requestStorageAccess() after a user interaction
@@ -61,9 +50,7 @@
                                 try {
                                 const handle = await document.requestStorageAccess({
                                     cookies: true,
-                                    localStorage: true,
                                 });
-                                doThingsWithLocalStorage(handle);
                                 doThingsWithCookies();
                                 } catch (err) {
                                 // If there is an error obtaining storage access.
