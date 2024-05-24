@@ -10,11 +10,12 @@
         <p>Determining storage access API status</p>
       </div>
       <script>
-        function doThingsWithCookies() {
+        function doThingsWithCookies(message) {
             document.cookie = "foo=bar"; // set a cookie
             // replace the content of the main div with a message
-            $("#main").html("<p>We have cookie access!</p>");
+            $("#main").html("<p>Do have cookie access?</p>");
             $("#main").append("<p>Cookie value: " + document.cookie + "</p>");
+            $("#main").append("<p>" + message + "</p>");
         }
 
         async function handleCookieAccess() {
@@ -24,14 +25,14 @@
                 console.log('tick2');    
                 // This browser doesn't support the Storage Access API
                 // so let's just hope we have access!
-                doThingsWithCookies();
+                doThingsWithCookies("!document.hasStorageAccess should fail");
             } else {
                 console.log('tick3');    
                 const hasAccess = await document.hasStorageAccess();
                 if (hasAccess) {
                     console.log('tick4');    
                     // We have access to third-party cookies, so let's go
-                    doThingsWithCookies();
+                    doThingsWithCookies("should be working");
                 } else {
                     console.log('tick5');    
                     // Check whether third-party cookie access has been granted
@@ -49,16 +50,16 @@
                             const handle = await document.requestStorageAccess({
                                 cookies: true,
                             });
-                            doThingsWithCookies();
+                            doThingsWithCookies("permission grated, should be working");
                         } else if (permission.state === "prompt") {
                             console.log('tick8');    
                             // Need to call requestStorageAccess() after a user interaction
                             btn.addEventListener("click", async () => {
                                 try {
-                                const handle = await document.requestStorageAccess({
-                                    cookies: true,
-                                });
-                                doThingsWithCookies();
+                                    const handle = await document.requestStorageAccess({
+                                        cookies: true,
+                                    });
+                                    doThingsWithCookies("Should be working after user interaction");
                                 } catch (err) {
                                 // If there is an error obtaining storage access.
                                 console.error(`Error obtaining storage access: ${err}.
@@ -72,7 +73,7 @@
                         }
                     } catch (error) {
                         console.log(`Could not access permission state. Error: ${error}`);
-                        doThingsWithCookies(); // Again, we'll have to hope we have access!
+                        doThingsWithCookies(`Error: ${error}`); // Again, we'll have to hope we have access!
                     }
                 }
             }
