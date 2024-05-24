@@ -14,18 +14,30 @@
         // Step 1: check for cookies, if not then open a new window to the site and set a cookie
         // Step 2: If cookies, check for storage access, if not then request storage access
 
-        function doThingsWithCookies(message) {
+        function updateUI(message) {
             document.cookie = "foo=bar"; // set a cookie
-            // replace the content of the main div with a message
             $("#main").html("<p>Do have cookie access? If so, you should see foo=bar below</p>");
             $("#main").append("<p>Cookie value: " + document.cookie + "</p>");
-            $("#main").append("<p>" + message + "</p>");
+
+            $("#main").append("<p>Message: " + message + "</p>");
+
+            $("#main").append("<button id='visit'>Visit as a first party</button>");
+            $("#visit").click(function() {
+                window.open('https://joshkatgeotab.github.io/visit.html', '_blank');
+            });
+
+            $("#main").append("<button id='requestaccess'>Request Storage Access</button>");
+            $("#requestaccess").click(function() {
+                handleRequestAccess();
+            });
         }
 
-        function addRequestButton() {
-
+        async function handleRequestAccess() {
+            const handle = await document.requestStorageAccess({
+                cookies: true,
+            });
+            updateUI("Should be working after user interaction");
         }
-
 
         async function handleCookieAccess() {
             console.log('tick1');    
@@ -34,56 +46,56 @@
                 console.log('tick2');    
                 // This browser doesn't support the Storage Access API
                 // so let's just hope we have access!
-                doThingsWithCookies("!document.hasStorageAccess should fail");
+                updateUI("!document.hasStorageAccess should fail");
             } else {
                 console.log('tick3');    
                 const hasAccess = await document.hasStorageAccess();
                 if (hasAccess) {
                     console.log('tick4');    
                     // We have access to third-party cookies, so let's go
-                    doThingsWithCookies("should be working");
+                    updateUI("should be working");
                 } else {
-                    console.log('tick5');    
-                    // Check whether third-party cookie access has been granted
-                    // to another same-site embed
-                    try {
-                        const permission = await navigator.permissions.query({
-                            name: "storage-access",
-                        });
-                        console.log('tick6');    
+                    // console.log('tick5');    
+                    // // Check whether third-party cookie access has been granted
+                    // // to another same-site embed
+                    // try {
+                    //     const permission = await navigator.permissions.query({
+                    //         name: "storage-access",
+                    //     });
+                    //     console.log('tick6');    
 
-                        if (permission.state === "granted") {
-                            console.log('tick7');    
-                            // If so, you can just call requestStorageAccess() without a user interaction,
-                            // and it will resolve automatically.
-                            const handle = await document.requestStorageAccess({
-                                cookies: true,
-                            });
-                            doThingsWithCookies("permission grated, should be working");
-                        } else if (permission.state === "prompt") {
-                            console.log('tick8');    
-                            // Need to call requestStorageAccess() after a user interaction
-                            btn.addEventListener("click", async () => {
-                                try {
-                                    const handle = await document.requestStorageAccess({
-                                        cookies: true,
-                                    });
-                                    doThingsWithCookies("Should be working after user interaction");
-                                } catch (err) {
-                                // If there is an error obtaining storage access.
-                                console.error(`Error obtaining storage access: ${err}.
-                                                Please sign in.`);
-                                }
-                            });
-                        } else if (permission.state === "denied") {
-                            // User has denied third-party cookie access, so we'll
-                            // need to do something else
-                            console.log('permission.state === "denied"');    
-                        }
-                    } catch (error) {
-                        console.log(`Could not access permission state. Error: ${error}`);
-                        doThingsWithCookies(`Error: ${error}`); // Again, we'll have to hope we have access!
-                    }
+                    //     if (permission.state === "granted") {
+                    //         console.log('tick7');    
+                    //         // If so, you can just call requestStorageAccess() without a user interaction,
+                    //         // and it will resolve automatically.
+                    //         const handle = await document.requestStorageAccess({
+                    //             cookies: true,
+                    //         });
+                    //         updateUI("permission grated, should be working");
+                    //     } else if (permission.state === "prompt") {
+                    //         console.log('tick8');    
+                    //         // Need to call requestStorageAccess() after a user interaction
+                    //         btn.addEventListener("click", async () => {
+                    //             try {
+                    //                 const handle = await document.requestStorageAccess({
+                    //                     cookies: true,
+                    //                 });
+                    //                 updateUI("Should be working after user interaction");
+                    //             } catch (err) {
+                    //             // If there is an error obtaining storage access.
+                    //             console.error(`Error obtaining storage access: ${err}.
+                    //                             Please sign in.`);
+                    //             }
+                    //         });
+                    //     } else if (permission.state === "denied") {
+                    //         // User has denied third-party cookie access, so we'll
+                    //         // need to do something else
+                    //         console.log('permission.state === "denied"');    
+                    //     }
+                    // } catch (error) {
+                    //     console.log(`Could not access permission state. Error: ${error}`);
+                    //     updateUI(`Error: ${error}`); // Again, we'll have to hope we have access!
+                    // }
                 }
             }
         }
@@ -112,13 +124,7 @@
 
         $(document).ready(function() {
             console.log('tick0.1');
-            if (getCookie('hasvisitedbefore')) {
-                console.log('tick0.2');
-                handleCookieAccess();
-            } else {
-                console.log('tick0.3');
-                window.open('https://joshkatgeotab.github.io/visit.html', '_blank');
-            }
+            handleCookieAccess();
         });
       </script>
    </body>
