@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Storage Access API Test</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+   </head>
+   <body>
+      <div id="main">
+        Loading...
+      </div>
+      <script>
+        $(document).ready(function() {
+            document.cookie = "hasvisitedbefore=yes"; // set a cookie
+            $("#main").html("<p>Welcome Visitor!</p>");
+            $("#main").append("<p>Cookie value: " + document.cookie + "</p>");
+            // html to add a button that calls window.close()
+            $("#main").append("<p><button id='btn'>Close</button></p>");
+            $('#btn').click(function() {
+                window.close();
+            });
+        });
+      </script>
+   </body>
+</html>

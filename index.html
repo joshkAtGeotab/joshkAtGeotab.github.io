@@ -10,13 +10,22 @@
         <p>Determining storage access API status</p>
       </div>
       <script>
+
+        // Step 1: check for cookies, if not then open a new window to the site and set a cookie
+        // Step 2: If cookies, check for storage access, if not then request storage access
+
         function doThingsWithCookies(message) {
             document.cookie = "foo=bar"; // set a cookie
             // replace the content of the main div with a message
-            $("#main").html("<p>Do have cookie access?</p>");
+            $("#main").html("<p>Do have cookie access? If so, you should see foo=bar below</p>");
             $("#main").append("<p>Cookie value: " + document.cookie + "</p>");
             $("#main").append("<p>" + message + "</p>");
         }
+
+        function addRequestButton() {
+
+        }
+
 
         async function handleCookieAccess() {
             console.log('tick1');    
@@ -81,8 +90,14 @@
         console.log('tick0');    
 
         $(document).ready(function() {
-            console.log('tick0.1');    
-            handleCookieAccess();
+            console.log('tick0.1');
+            if ($.cookie('hasvisitedbefore')) {
+                console.log('tick0.2');
+                handleCookieAccess();
+            } else {
+                console.log('tick0.3');
+                window.open('https://joshkatgeotab.github.io/visit.html', '_blank');
+            }
         });
       </script>
    </body>
