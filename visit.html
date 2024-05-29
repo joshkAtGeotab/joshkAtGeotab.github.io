@@ -19,6 +19,10 @@
             $('#btn').click(function() {
                 window.close();
             });
+            $("#main").append("<p><button id='backbtn'>Back</button></p>");
+            $('#backbtn').click(function() {
+               history.back();
+            });
         });
       </script>
    </body>

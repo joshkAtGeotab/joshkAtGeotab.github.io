@@ -21,21 +21,26 @@
 
             $("#main").append("<p>Message: " + message + "</p>");
 
-            $("#main").append("<button id='visit'>Visit as a first party</button>");
+            $("#main").append("<br/><button id='visit'>Visit as a first party window.open</button>");
             $("#visit").click(function() {
                 window.open('https://joshkatgeotab.github.io/visit.html', '_blank');
             });
 
-            $("#main").append("<button id='requestaccess'>Request Storage Access</button>");
+            $("#main").append("<br/><a href='https://joshkatgeotab.github.io/visit.html'>Visit as a first party navigate</a>");
+
+            $("#main").append("<br/><button id='requestaccess'>Request Storage Access</button>");
             $("#requestaccess").click(function() {
                 handleRequestAccess();
+            });
+
+            $("#main").append("<br/><button id='refreshui'>Refresh UI</button>");
+            $("#refreshui").click(function() {
+                updateUI("Refreshed UI");
             });
         }
 
         async function handleRequestAccess() {
-            const handle = await document.requestStorageAccess({
-                cookies: true,
-            });
+            const handle = await document.requestStorageAccess();
             updateUI("Should be working after user interaction");
         }
 
